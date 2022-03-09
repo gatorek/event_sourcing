@@ -5,6 +5,8 @@ defmodule EventSourcing.Projections.Appointment do
 
   schema "appointments" do
     field :status, :string
+    field :start_datetime, :utc_datetime
+    field :duration_in_seconds, :integer
 
     timestamps()
   end
