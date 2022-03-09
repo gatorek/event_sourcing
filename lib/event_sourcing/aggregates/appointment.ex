@@ -3,13 +3,15 @@ defmodule EventSourcing.Aggregates.Appointment do
   alias EventSourcing.Commands.CreateAppointment
   alias EventSourcing.Events.AppointmentCreated
 
+  @initial_status "new"
+
   defstruct [:appointment_id, :status]
 
   def execute(
         %Appointment{appointment_id: nil},
-        %CreateAppointment{appointment_id: appointment_id, status: status}
+        %CreateAppointment{appointment_id: appointment_id}
       ) do
-    %AppointmentCreated{appointment_id: appointment_id, status: status}
+    %AppointmentCreated{appointment_id: appointment_id, status: @initial_status}
   end
 
   # Ensure appointment was not already created
