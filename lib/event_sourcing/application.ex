@@ -18,9 +18,7 @@ defmodule EventSourcing.Application do
       # Start a worker by calling: EventSourcing.Worker.start_link(arg)
       # {EventSourcing.Worker, arg}
       EventSourcing.EventStoreApplication,
-      EventSourcing.Projectors.AppointmentCreated,
-      EventSourcing.Projectors.AppointmentStatusChanged,
-      EventSourcing.Projectors.AppointmentScheduled,
+      EventSourcing.Projectors.AppointmentProjector
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

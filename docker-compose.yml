@@ -2,15 +2,16 @@ version: "3"
 
 services:
   db:
-    image: postgres:9.6
+    image: postgres:12-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_HOST_AUTH_METHOD: trust      
     restart: always
     env_file:
       - postgres.env
     ports:
       - "8001:5432" 
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data
+    # volumes:
+    #   - ./pgdata:/var/lib/postgresql/data
