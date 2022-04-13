@@ -19,8 +19,11 @@ defmodule EventSourcing.Aggregates.Appointment do
     [
       %AppointmentCreated{appointment_id: appointment_id},
       %AppointmentStatusChanged{appointment_id: appointment_id, status: "new"},
-      %AppointmentScheduled{appointment_id: appointment_id, start_datetime: start_datetime}
-    ]
+    ] ++ if start_datetime do
+      [%AppointmentScheduled{appointment_id: appointment_id, start_datetime: start_datetime}]
+    else
+      []
+    end
   end
 
   def execute(
