@@ -1,6 +1,5 @@
 defmodule EventSourcing.Aggregates.Appointment do
   alias EventSourcing.Aggregates.Appointment
-  alias EventSourcing.Commands.CancelAppointment
   alias EventSourcing.Commands.CompleteAppointment
   alias EventSourcing.Commands.CreateAppointment
   alias EventSourcing.Commands.ScheduleAppointment
@@ -34,11 +33,15 @@ defmodule EventSourcing.Aggregates.Appointment do
   end
 
   # CancelAppointment
-  def execute(
-        %Appointment{appointment_id: appointment_id},
-        %CancelAppointment{appointment_id: appointment_id}
-      ) do
+  # def execute(
+  #       %Appointment{appointment_id: appointment_id},
+  #       %CancelAppointment{appointment_id: appointment_id}
+  #     ) do
 
+  #   %AppointmentStatusChanged{appointment_id: appointment_id, status: "canceled"}
+  # end
+
+  def cancel_appointment(%Appointment{}, appointment_id) do
     %AppointmentStatusChanged{appointment_id: appointment_id, status: "canceled"}
   end
 
