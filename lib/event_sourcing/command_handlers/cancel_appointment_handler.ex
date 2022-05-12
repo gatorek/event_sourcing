@@ -13,9 +13,9 @@ defmodule EventSourcing.CommandHandlers.CancelAppointmentHandler do
   end
 
   def handle(
-    %Appointment{} = aggregate,
-    %CancelAppointment{appointment_id: appointment_id})
-  do
-    Appointment.cancel_appointment(aggregate, appointment_id)
+        %Appointment{},
+        %CancelAppointment{appointment_id: appointment_id}
+      ) do
+    Appointment.cancel(appointment_id)
   end
 end

@@ -1,66 +1,33 @@
 defmodule EventSourcing.Aggregates.Appointment do
   alias EventSourcing.Aggregates.Appointment
-  alias EventSourcing.Commands.CompleteAppointment
-  alias EventSourcing.Commands.CreateAppointment
-  alias EventSourcing.Commands.ScheduleAppointment
   alias EventSourcing.Events.AppointmentCreated
   alias EventSourcing.Events.AppointmentScheduled
   alias EventSourcing.Events.AppointmentStatusChanged
 
   defstruct [:appointment_id, :status, :start_datetime, :duration_in_seconds]
 
-  # CreateAppointment
-  def execute(
-        %Appointment{appointment_id: nil},
-        %CreateAppointment{appointment_id: appointment_id, start_datetime: start_datetime}
-      ) do
-
+  # Aggregate API
+  def create(appointment_id, start_datetime \\ nil) do
     [
       %AppointmentCreated{appointment_id: appointment_id},
-      %AppointmentStatusChanged{appointment_id: appointment_id, status: "new"},
-    ] ++ if start_datetime do
-      [%AppointmentScheduled{appointment_id: appointment_id, start_datetime: start_datetime}]
-    else
-      []
-    end
+      %AppointmentStatusChanged{appointment_id: appointment_id, status: "new"}
+    ] ++
+      if start_datetime do
+        [%AppointmentScheduled{appointment_id: appointment_id, start_datetime: start_datetime}]
+      else
+        []
+      end
   end
 
-  def execute(
-        %Appointment{},
-        %CreateAppointment{}
-      ) do
-    {:error, :appointment_already_created}
-  end
-
-  # CancelAppointment
-  # def execute(
-  #       %Appointment{appointment_id: appointment_id},
-  #       %CancelAppointment{appointment_id: appointment_id}
-  #     ) do
-
-  #   %AppointmentStatusChanged{appointment_id: appointment_id, status: "canceled"}
-  # end
-
-  def cancel_appointment(%Appointment{}, appointment_id) do
+  def cancel(appointment_id) do
     %AppointmentStatusChanged{appointment_id: appointment_id, status: "canceled"}
   end
 
-  # CompleteAppointment
-  def execute(
-        %Appointment{appointment_id: appointment_id},
-        %CompleteAppointment{appointment_id: appointment_id}
-      ) do
-
+  def complete(appointment_id) do
     %AppointmentStatusChanged{appointment_id: appointment_id, status: "completed"}
   end
 
-  # ScheduleAppointment
-  def execute(
-        %Appointment{appointment_id: appointment_id},
-        %ScheduleAppointment{appointment_id: appointment_id,
-          start_datetime: start_datetime}
-      ) do
-
+  def schedule(appointment_id, start_datetime) do
     [
       %AppointmentScheduled{appointment_id: appointment_id, start_datetime: start_datetime},
       %AppointmentStatusChanged{appointment_id: appointment_id, status: "scheduled"}
@@ -74,8 +41,7 @@ defmodule EventSourcing.Aggregates.Appointment do
         %Appointment{} = appointment,
         %AppointmentCreated{} = event
       ) do
-    %AppointmentCreated{appointment_id: appointment_id} =
-      event
+    %AppointmentCreated{appointment_id: appointment_id} = event
 
     %Appointment{
       appointment
@@ -97,14 +63,6 @@ defmodule EventSourcing.Aggregates.Appointment do
   end
 
   # AppointmentScheduled
-  def apply(
-        %Appointment{} = appointment,
-        %AppointmentScheduled{start_datetime: nil}
-      ) do
-
-    appointment
-  end
-
   def apply(
         %Appointment{} = appointment,
         %AppointmentScheduled{} = event

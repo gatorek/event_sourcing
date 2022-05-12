@@ -1,4 +1,3 @@
-
 defmodule EventSourcing.Projectors.AppointmentProjector do
   use Commanded.Projections.Ecto,
     name: "Appointments.Projectors.AppointmentProjector",
@@ -14,18 +13,15 @@ defmodule EventSourcing.Projectors.AppointmentProjector do
   alias Ecto.{Changeset, Multi}
 
   project(%AppointmentCreated{} = event, _metadata, fn multi ->
-    IO.inspect "PROJECT CREATED"
     Ecto.Multi.insert(multi, :appointment, %Appointment{
       uuid: event.appointment_id
     })
   end)
 
-
   project(%AppointmentScheduled{} = event, _metadata, fn multi ->
-    IO.inspect "PROJECT SCHEDULED"
-    with %Appointment{} = appointment <- EventSourcing.Repo.get(Appointment, event.appointment_id),
-     {:ok, start_datetime, _} <- DateTime.from_iso8601(event.start_datetime) |> IO.inspect do
-      IO.inspect "PROJECT SCHEDULED AND ADDED TO MULTI"
+    with %Appointment{} = appointment <-
+           EventSourcing.Repo.get(Appointment, event.appointment_id),
+         {:ok, start_datetime, _} <- DateTime.from_iso8601(event.start_datetime) do
 
       Multi.update(
         multi,
@@ -38,9 +34,8 @@ defmodule EventSourcing.Projectors.AppointmentProjector do
   end)
 
   project(%AppointmentStatusChanged{} = event, _metadata, fn multi ->
-    IO.inspect "PROJECT STATUS CHANGE"
     with %Appointment{} = appointment <- EventSourcing.Repo.get(Appointment, event.appointment_id) do
-      IO.inspect "PROJECT CHANGED AND ADDED TO MULTI"
+
       Multi.update(
         multi,
         :appointment,
