@@ -1,5 +1,10 @@
 # EventSourcing
 
+A playground for experimentiūg with event sourcing and commanded
+Currently, there's no interface, so just play around with commandline. Use docker compose to start with db.
+
+## Instalation
+
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`
